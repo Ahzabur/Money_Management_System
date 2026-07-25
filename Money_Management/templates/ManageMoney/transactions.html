@@ -1,0 +1,102 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="min-h-[88vh] bg-slate-100 p-6">
+  <!-- Header -->
+
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">All Transactions</h1>
+
+      <p class="text-slate-500 mt-2">
+        View your complete income and expense history.
+      </p>
+    </div>
+
+    <a
+      href="{% url 'dashboard' %}"
+      class="mt-4 md:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition"
+    >
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-6 py-4 text-left text-slate-600">#</th>
+
+            <th class="px-6 py-4 text-left text-slate-600">Type</th>
+
+            <th class="px-6 py-4 text-left text-slate-600">Description</th>
+
+            <th class="px-6 py-4 text-right text-slate-600">Amount</th>
+
+            <th class="px-6 py-4 text-left text-slate-600">Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in items %}
+
+          <tr class="border-t hover:bg-slate-50 transition">
+            <td class="px-6 py-4 font-semibold">{{ forloop.counter }}</td>
+
+            <td class="px-6 py-4">
+              {% if item.type == "income" %}
+
+              <span
+                class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold"
+              >
+                Income
+              </span>
+
+              {% else %}
+
+              <span
+                class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold"
+              >
+                Expense
+              </span>
+
+              {% endif %}
+            </td>
+
+            <td class="px-6 py-4 text-slate-700">{{ item.description }}</td>
+
+            <td class="px-6 py-4 text-right font-semibold">
+              {% if item.type == "income" %}
+
+              <span class="text-emerald-600"> + ${{ item.amount }} </span>
+
+              {% else %}
+
+              <span class="text-red-600"> - ${{ item.amount }} </span>
+
+              {% endif %}
+            </td>
+
+            <td class="px-6 py-4 text-slate-600">
+              {{ item.created_at|date:"M d, Y h:i A" }}
+            </td>
+          </tr>
+
+          {% empty %}
+
+          <tr>
+            <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+              No transactions found.
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

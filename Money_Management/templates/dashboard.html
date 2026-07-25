@@ -1,0 +1,150 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="min-h-[88vh] bg-slate-100 p-6">
+  <!-- Dashboard Header -->
+
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">Dashboard</h1>
+
+      <p class="text-slate-500 mt-1">
+        Welcome back! Here's your financial overview.
+      </p>
+    </div>
+
+    <div class="flex gap-3 mt-5 md:mt-0">
+      <a
+        href="{% url 'add_cash' %}"
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+      >
+        + Add Cash
+      </a>
+
+      <a
+        href="{% url 'add_expense' %}"
+        class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+      >
+        + Add Expense
+      </a>
+    </div>
+  </div>
+
+  <!--Cards Start -->
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-3xl shadow-xl p-6">
+      <p class="text-slate-500 text-sm">Total Income</p>
+
+      <h2 class="text-3xl font-bold text-emerald-600 mt-2">
+        ${{ total_cash|default:"0" }}
+      </h2>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl p-6">
+      <p class="text-slate-500 text-sm">Total Expense</p>
+
+      <h2 class="text-3xl font-bold text-red-600 mt-2">
+        ${{ total_expense|default:"0" }}
+      </h2>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl p-6">
+      <p class="text-slate-500 text-sm">Current Balance</p>
+
+      <h2 class="text-3xl font-bold text-indigo-600 mt-2">
+        ${{ balance|default:"0" }}
+      </h2>
+    </div>
+  </div>
+
+  <!-- Cards End -->
+
+  <!-- Table Start -->
+
+  <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+    <div class="px-6 py-5 border-b">
+      <h2 class="text-xl font-bold text-slate-800">Recent Transactions</h2>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-6 py-4 text-left text-slate-600">No.</th>
+
+            <th class="px-6 py-4 text-left text-slate-600">Type</th>
+
+            <th class="px-6 py-4 text-left text-slate-600">Description</th>
+
+            <th class="px-6 py-4 text-right text-slate-600">Amount</th>
+
+            <th class="px-6 py-4 text-left text-slate-600">Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for e in entries %}
+
+          <tr class="border-t hover:bg-slate-50 transition">
+            <td class="px-6 py-4 font-semibold text-slate-700">
+              {{ forloop.counter }}
+            </td>
+
+            <td class="px-6 py-4">
+              {% if e.type == "income" %}
+
+              <span
+                class="px-3 py-1 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700"
+              >
+                Income
+              </span>
+
+              {% else %}
+
+              <span
+                class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700"
+              >
+                Expense
+              </span>
+
+              {% endif %}
+            </td>
+
+            <td class="px-6 py-4 text-slate-700">{{ e.description }}</td>
+
+            <td class="px-6 py-4 text-right font-semibold">
+              {% if e.type == "income" %}
+
+              <span class="text-emerald-600"> + ${{ e.amount }} </span>
+
+              {% else %}
+
+              <span class="text-red-600"> - ${{ e.amount }} </span>
+
+              {% endif %}
+            </td>
+
+            <td class="px-6 py-4 text-slate-600">
+              {{ e.created_at|date:"M d, Y" }}
+            </td>
+          </tr>
+
+          {% empty %}
+
+          <tr>
+            <td colspan="5" class="px-6 py-10 text-center text-slate-500">
+              No transactions yet.
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Table End -->
+</div>
+
+{% endblock %}
